@@ -5,27 +5,63 @@ from selenium.webdriver.common.by import By
 
 
 def runScript():
-    driver = webdriver.Chrome()
-    driver.get(link)
-    # We get an array of all radio buttons.
-    radiobuttons = driver.find_elements(By.CLASS_NAME, "docssharedWizToggleLabeledContainer")
 
-    # CLick Radio Buttons
-    for i in range(len(answersArray)):
-        radiobuttons[answersArray[i]].click()
+    #declare variables & obtain essential data
+    link = input("Enter Form Link: \n")
+    answersArray = []
+    extraChoicesArray = []
+    noAnswers = int(input("How many options you want to click (Counts  for Radio Buttons & Check Boxes) :) \n"))
 
-    time.sleep(5000)
-    #radiobuttons[2].click()
+    for i in range(noAnswers):
+        answersArray.append(int(input("Radio Button Number: ")))
+    
+    extraChoices = input("Any Extra XPATH Choices? (e.g 1 to 5 rating e.t.c) Y/N ")
+
+    if(extraChoices == 'Y'):
+        extraChoicesNumber = int(input("How many extra choices? "))
+        for i in range(extraChoicesNumber):
+            extraChoicesXPATH = input("XPATH: ")
+            extraChoicesArray.append(extraChoicesXPATH)
+    
+    submitXPath = input("Submit Button XPath: ")
+
+    numberOfEntries = int(input("How many times do you want to run this script? "))
+    for i in range(numberOfEntries):
+        #start scripting --------------------------------------------------------------
+        print("Running Script..." + str(i+1))
+        driver = webdriver.Chrome()
+        driver.get(link)
+
+        # We get an array of all radio buttons.& checkboxes
+        radiobuttons = driver.find_elements(By.CLASS_NAME, "docssharedWizToggleLabeledContainer")
+
+        # CLick Radio Buttons
+        for i in range(len(answersArray)):
+            radiobuttons[answersArray[i]].click()
+        #Click Extra Choices
+
+        for i in range(len(extraChoicesArray)):
+            (driver.find_element(By.XPATH, extraChoicesArray[i])).click()
+
+
+        submitbutton = driver.find_element(By.XPATH, submitXPath)
+        print(str(i+1) + "Script Completed.")
+        submitbutton.click()
+        
+        
 
 
 
-link = input("Enter Form Link: \n")
-answersArray = []
 
-noAnswers = int(input("How many options you want to click (Radio Buttons) :) \n"))
-
-for i in range(noAnswers):
-    answersArray.append(int(input("Radio Button Number: ")))
+# Main
+print("""
+    -----------------------WELCOME TO GOOGLE FORM AUTO FILL ------------------------------ SCRIPT BY JAVIER NEOH 
+    Things to prepare before using
+    1. Google Form Link
+    2. Number of the Radio buttons/Check Boxes you want to click. ( Start counting from 0)
+    4. XPath for Special Buttons. ( e.g 1 to 5)
+    3. Submit Button XPath
+     """)
 
 runScript()
 
